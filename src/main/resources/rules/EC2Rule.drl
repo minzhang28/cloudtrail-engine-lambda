@@ -1,0 +1,12 @@
+import java.util.Map
+import cloudengine.AlertServices.DatadogAlertService;
+
+
+rule "ec2.amazonaws.com: Test Alert - Someone is Changing security group"
+       	when
+       		$map: Map(this["userIdentity.arn"].contains("user@company.com") &&
+       		          this["eventName"] == "AuthorizeSecurityGroupIngress" &&
+       		          this["userAgent"].contains("console"))
+       	then
+       	    new DatadogAlertService().report($map, drools.getRule().getName());
+       	end

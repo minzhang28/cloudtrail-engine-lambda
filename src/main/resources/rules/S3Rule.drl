@@ -1,0 +1,19 @@
+import java.util.Map;
+
+
+rule "s3.amazonaws.com: event version is 1.05"
+       	when
+       		$map: Map(this["eventVersion"] == "1.05")
+       	then
+       	    System.out.println(drools.getRule().getName() + " is triggered");
+            System.out.println($map);
+       	end
+
+
+rule "s3.amazonaws.com: event version is not 1.05"
+       	when
+       		$map: Map(this["eventVersion"] != "1.05")
+       	then
+       	    System.out.println(drools.getRule().getName() + " is triggered");
+            System.out.println($map);
+       	end
