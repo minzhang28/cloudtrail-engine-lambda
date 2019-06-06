@@ -3,9 +3,9 @@ A lambda function (rule engine) to monitor AWS api calls base on the CloudTrail 
 
 
 #### Background
-In AWS, it's easy to maintain the `infra as code` by using existing services like `terraform`
-or `CloudFormation`, but there's no monitoring of the real time changes happened on the infra, which leaves the OPS people blind
-on the specious activities on the AWS environment. This to provide a `near real time` alerting API service to track and notify any unexpected API calls happened on the AWS environment.
+In AWS, it's easy to maintain the `infra as code` by using the existing services like `terraform`
+or `CloudFormation`, but there's no way to monitor infrastructure changes happening in real-time which makes the life of Operations people difficult
+to monitor suspicious activities on the AWS environment. This tool is to provide a `near real time` alerting API service to track and notify any unexpected API calls happened on the AWS environment.
 
 #### Why Rule Engine
 AWS provides CloudWatch or AWS Config service to monitor the API calls to the AWS account but they have their own disadvantages:
@@ -17,13 +17,13 @@ CloudTrail engine provides a much easier way to define the rules that you want t
 
 
 #### Software Stack
-- [Drools](https://www.drools.org/) : Rule engine to analytics rules
+- [Drools](https://www.drools.org/): Rule engine to analytics rules
 
 
 #### Diagram
 ![Diagram](diagram.png)
-- When you create the Lambda function for CloudWatch Events, you can create an event selector, which functions as a filter for the Lambda function so that the function is only invoked for specific events. This approach has two advantages: it avoids unnecessary calls to Lambda
-- For the example below, I am using this rule selector to filter all the changes of security group rules to trigger the CloudTrail engine lambda function  
+- When you create the Lambda function for CloudWatch Events, you can create an event selector, which functions as a filter for the Lambda function so that the function is only invoked for specific events. This approach has an advantage of avoiding unnecessary calls to Lambda
+- For example, below I am using this rule selector to filter all the changes of security group rules to trigger the CloudTrail engine lambda function
 ```
 {
   "detail-type": [
@@ -43,7 +43,7 @@ CloudTrail engine provides a much easier way to define the rules that you want t
 
 
 #### CloudTrail Event Example
-CloudTrail engine flatten the CloudTrail event into a flat JSON, blow is an example of user `user@company.com` made changes to security group `sg-abcdefg` from AWS web console to allow all traffic from IP `1.2.3.4/32`. For more details about the CloudTrail event please refer to [this aws doc](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html)
+CloudTrail engine flatten the CloudTrail event into a flat JSON, below is an example of a user `user@company.com` made changes to the security group `sg-abcdefg` from AWS web console to allow all traffic from IP `1.2.3.4/32`. For more details about the CloudTrail event please refer to [this aws doc](https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-record-contents.html)
 
 ```
 {
@@ -88,7 +88,7 @@ CloudTrail engine flatten the CloudTrail event into a flat JSON, blow is an exam
   "eventName": "AuthorizeSecurityGroupIngress"
 }
 ```
-The reason to why I flattern this JSON is to provide an easier way to define the rules. see the `Rules` section below
+The reason why I flatten this JSON is to provide an easier way to define the rules. See the `Rules` section below.
 
 #### Cloud Engine Rules
 Cloud Engine rule is customized rules that yield `true` or `false` in order to trigger responsive actions from downstream. It's
@@ -113,7 +113,7 @@ end
 ```
 
 #### Cloud Engine Rule Naming Convention
-The lambda function reads the input value of `eventSource` field and using it's value to find the rules defined in the rules folder.
+The lambda function reads the input value of `eventSource` field and using its value to find the rules defined in the rules folder.
 
 In order to support multiple AWS rules, please name the rules with "$eventSource: $ruleName", for example:
 - `ec2.amazonaws.com: someone changes the security group`
